@@ -3,3 +3,5 @@
 //
 
 #include "myreadwrite.h"
+
+//Templates are all in the header file
