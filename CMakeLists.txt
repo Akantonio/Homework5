@@ -3,4 +3,4 @@ project(Homework5)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Homework5 main.cpp)
+add_executable(Homework5 main.cpp myreadwrite.cpp myreadwrite.h Rational.cpp Rational.hpp)
