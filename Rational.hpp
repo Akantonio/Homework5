@@ -1,6 +1,7 @@
 //
 // Created by Chris Hartman on 2/18/21.
 //
+//Modified by Adrian Antonio for Homework 5 on 4/20/2021
 
 #ifndef CS202CLASSEXAMPLE_RATIONAL_HPP
 #define CS202CLASSEXAMPLE_RATIONAL_HPP
