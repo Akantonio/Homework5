@@ -6,9 +6,14 @@
 #define HOMEWORK5_MYREADWRITE_H
 
 
-class myreadwrite {
 
-};
+template<typename T>
+void myWrite(){
 
+}
+template<typename T>
+void myRead(){
+
+}
 
 #endif //HOMEWORK5_MYREADWRITE_H
