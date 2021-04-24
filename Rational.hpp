@@ -9,11 +9,18 @@
 
 // class invariant:
 // _denominator is always > 0
+template<typename TClass>
 class Rational {
+    template<typename U>
     friend std::ostream& operator<<(std::ostream &, const Rational &rhs);
+
+    template<typename U>
     friend Rational operator+(const Rational &lhs, const Rational &rhs);
+    template<typename U>
     friend Rational operator-(const Rational &lhs);
+    template<typename U>
     friend bool operator==(const Rational &lhs, const Rational &rhs);
+    template<typename U>
     friend bool operator<(const Rational &lhs, const Rational &rhs);
 
 public:
