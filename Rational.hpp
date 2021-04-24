@@ -11,16 +11,16 @@
 // _denominator is always > 0
 template<typename TClass>
 class Rational {
-    template<typename U>
+    template<typename UFriend>
     friend std::ostream& operator<<(std::ostream &, const Rational &rhs);
 
-    template<typename U>
+    template<typename UFriend>
     friend Rational operator+(const Rational &lhs, const Rational &rhs);
-    template<typename U>
+    template<typename UFriend>
     friend Rational operator-(const Rational &lhs);
-    template<typename U>
+    template<typename UFriend>
     friend bool operator==(const Rational &lhs, const Rational &rhs);
-    template<typename U>
+    template<typename UFriend>
     friend bool operator<(const Rational &lhs, const Rational &rhs);
 
 public:
