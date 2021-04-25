@@ -6,6 +6,8 @@
 #include "Rational.hpp"
 #include <numeric>
 
+//All of this should be using rational<int>
+
 Rational::Rational(int num, int den) : _numerator(num), _denominator(den) {
     reduce();
 }

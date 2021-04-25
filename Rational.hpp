@@ -6,47 +6,146 @@
 #ifndef CS202CLASSEXAMPLE_RATIONAL_HPP
 #define CS202CLASSEXAMPLE_RATIONAL_HPP
 #include <iostream>
-
+#include <numeric>
 // class invariant:
 // _denominator is always > 0
 template<typename TClass>
 class Rational {
     template<typename UFriend>
-    friend std::ostream& operator<<(std::ostream &, const Rational &rhs);
-
+    friend std::ostream& operator<<(std::ostream &, const Rational<UFriend> &rhs);//must be declared as a template function also
     template<typename UFriend>
-    friend Rational operator+(const Rational &lhs, const Rational &rhs);
+    friend Rational<UFriend> operator+(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs);
     template<typename UFriend>
-    friend Rational operator-(const Rational &lhs);
+    friend Rational<UFriend> operator-(const Rational<UFriend> &lhs);
     template<typename UFriend>
-    friend bool operator==(const Rational &lhs, const Rational &rhs);
+    friend bool operator==(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs);
     template<typename UFriend>
-    friend bool operator<(const Rational &lhs, const Rational &rhs);
+    friend bool operator<(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs);
 
 public:
-    Rational(int,int=1); //NOLINT(google-explicit-constructor): Allow implicit conversion from int
-    Rational & operator+=(const Rational& rhs);
-    Rational & operator-=(const Rational& rhs);
-    Rational & operator*=(const Rational& rhs);
-    Rational & operator/=(const Rational& rhs);
-    Rational & operator++();        //prefix ++
-    Rational operator++(int); //postfix ++
-    Rational & operator--();        //prefix --
-    Rational operator--(int); //postfix --
+    Rational(TClass,TClass=1);
+    Rational<TClass> & operator+=(const Rational<TClass>& rhs);
+    Rational<TClass> & operator-=(const Rational<TClass>& rhs);
+    Rational<TClass> & operator*=(const Rational<TClass>& rhs);
+    Rational<TClass> & operator/=(const Rational<TClass>& rhs);
+    Rational<TClass> & operator++();        //prefix ++
+    Rational<TClass> operator++(TClass); //postfix ++
+    Rational<TClass> & operator--();        //prefix --
+    Rational<TClass> operator--(TClass); //postfix --
 private:
     void reduce();
-
-    int _numerator;
-    int _denominator;
+    TClass _numerator;
+    TClass _denominator;
 };
 
-Rational operator-(const Rational &lhs, const Rational &rhs);
-Rational operator*(Rational lhs, const Rational &rhs);
-Rational operator/(Rational lhs, const Rational &rhs);
+template<typename TFunction>
+Rational<TFunction> operator-(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs);
+template<typename TFunction>
+Rational<TFunction> operator*(Rational<TFunction> lhs, const Rational<TFunction> &rhs);
+template<typename TFunction>
+Rational<TFunction> operator/(Rational<TFunction> lhs, const Rational<TFunction> &rhs);
 
-bool operator!=(const Rational &lhs, const Rational &rhs);
-bool operator>(const Rational &lhs, const Rational &rhs);
-bool operator<=(const Rational &lhs, const Rational &rhs);
-bool operator>=(const Rational &lhs, const Rational &rhs);
+template<typename TFunction>
+bool operator!=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs);
+template<typename TFunction>
+bool operator>(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs);
+template<typename TFunction>
+bool operator<=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs);
+template<typename TFunction>
+bool operator>=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs);
 
+//Friend of Rational Class
+template<typename UFriend>
+std::ostream &operator<<(std::ostream &os, const Rational<UFriend> &rhs) {
+    os << rhs._numerator;
+    if (rhs._denominator != 1)
+        os << "/" << rhs._denominator;
+    return os;
+}
+template<typename UFriend>
+Rational<UFriend> operator+(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs) { //canonical
+    auto temp{lhs};
+    temp += rhs;
+    return temp;
+}
+template<typename UFriend>
+Rational<UFriend> operator-(const Rational<UFriend> &lhs) {
+    return { -lhs._numerator, lhs._denominator };
+}
+
+template<typename UFriend>
+bool operator==(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs) {
+    return lhs._numerator==rhs._numerator && lhs._denominator==rhs._denominator;
+}
+
+template<typename UFriend>
+bool operator<(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs) {
+    return lhs._numerator*rhs._denominator < rhs._numerator*lhs._denominator;
+}
+
+//Inside of Rational Class
+template<typename TClass>
+Rational<TClass>::Rational(TClass num,TClass den): _numerator(num),_denominator(den){
+    reduce();
+}
+template<typename TClass>
+Rational<TClass> & Rational<TClass>::operator+=(const Rational<TClass> &rhs) {
+    // a/b + c/d = (ad+bc)/ad
+    _numerator = _numerator * rhs._denominator + rhs._numerator * _denominator;
+    _denominator *= rhs._denominator;
+    reduce();
+    return *this;
+}
+template<typename TClass>
+Rational<TClass> &Rational<TClass>::operator-=(const Rational<TClass> &rhs) { //Canonical
+    *this = *this - rhs; //uses Rational::operator- to define operator-=
+    return *this;
+}
+template<typename TClass>
+Rational<TClass> &Rational<TClass>::operator*=(const Rational<TClass> &rhs) {
+    _numerator *= rhs._numerator;
+    _denominator *= rhs._denominator;
+    return *this;
+}
+template<typename TClass>
+Rational<TClass> & Rational<TClass>::operator/=(const Rational<TClass>& rhs){
+    return *this *= {rhs._denominator,rhs._numerator};
+}
+template<typename TClass>
+Rational<TClass> & Rational<TClass>::operator++() {//prefix ++
+    return *this += 1;
+}
+template<typename TClass>
+Rational<TClass> Rational<TClass>::operator++(TClass) {//postfix ++
+    auto copy{*this};
+    ++(*this);
+    return copy;
+}
+template<typename TClass>
+Rational<TClass> & Rational<TClass>::operator--() {//prefix --
+    return *this -= 1;
+}
+template<typename TClass>
+Rational<TClass> Rational<TClass>::operator--(TClass) {//postfix --
+    auto copy{*this};
+    --(*this);
+    return copy;
+}
+//Global Operator Function
+template<typename TFunction>
+bool operator!=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs) {//canonical
+    return !(rhs==lhs);
+}
+template<typename TFunction>
+bool operator>(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs){
+    return rhs<lhs;
+}
+template<typename TFunction>
+bool operator<=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs){
+    return ! (rhs>lhs);
+}
+template<typename TFunction>
+bool operator>=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs){
+    return ! (rhs<lhs);
+}
 #endif//CS202CLASSEXAMPLE_RATIONAL_HPP
