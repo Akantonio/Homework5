@@ -11,15 +11,20 @@
 
 
 template<typename T>
-void myWrite(std::ofstream & file,T & variableName){
-
+void myWrite(std::ofstream & fileName, T variableName){
+    if(fileName.is_open()){
+        fileName.write(reinterpret_cast<char *>(&variableName), sizeof(T));
+    }else{
+        std::cout<<"File NOT OPEN!!"<<std::endl;
+    }
 }
 template<typename T>
-void myRead(std::ifstream & fileName, T & variableName) {
-    if (!fileName.is_open()) {
-        std::cout << "File NOT open!!" << std::endl;
-    } else {
+void myRead(std::ifstream & fileName, T  variableName) {
+    if (fileName.is_open()) {
         fileName.read(reinterpret_cast<char *>(variableName), sizeof(T)); //might need to add "&" also to variable name
+    } else {
+        std::cout << "File NOT open!!" << std::endl;
+
     }
 }
 
