@@ -6,5 +6,3 @@
 #include "Rational.hpp"
 #include <numeric>
 
-//All of this should be using rational<int>
-

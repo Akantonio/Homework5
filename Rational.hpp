@@ -23,7 +23,7 @@ class Rational {
     friend bool operator<(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs);
 
 public:
-    Rational();
+    Rational<TClass>();
     Rational<TClass>(TClass,TClass=1);
     Rational<TClass> & operator+=(const Rational<TClass>& rhs);
     Rational<TClass> & operator-=(const Rational<TClass>& rhs);
@@ -106,6 +106,7 @@ template<typename TClass>
 Rational<TClass> &Rational<TClass>::operator*=(const Rational<TClass> &rhs) {
     _numerator *= rhs._numerator;
     _denominator *= rhs._denominator;
+    reduce();
     return *this;
 }
 template<typename TClass>
@@ -145,12 +146,23 @@ void Rational<TClass>::reduce() {
 }
 
 template<typename TClass>
-Rational<TClass>::Rational() {
+Rational<TClass>::Rational():_numerator(0),_denominator(1) {
 }
 
 
-
 //Global Operator Function
+template<typename TFunction>
+Rational<TFunction> operator-(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs) {
+    return lhs + -rhs;
+}
+template<typename TFunction>
+Rational<TFunction> operator*(Rational<TFunction> lhs, const Rational<TFunction> &rhs) { //Canonical
+    return lhs *= rhs;
+}
+template<typename TFunction>
+Rational<TFunction> operator/(Rational<TFunction> lhs, const Rational<TFunction> &rhs) { //Canonical
+    return lhs /= rhs;
+}
 template<typename TFunction>
 bool operator!=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs) {//canonical
     return !(rhs==lhs);
