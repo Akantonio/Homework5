@@ -23,15 +23,16 @@ class Rational {
     friend bool operator<(const Rational<UFriend> &lhs, const Rational<UFriend> &rhs);
 
 public:
-    Rational(TClass,TClass=1);
+    Rational();
+    Rational<TClass>(TClass,TClass=1);
     Rational<TClass> & operator+=(const Rational<TClass>& rhs);
     Rational<TClass> & operator-=(const Rational<TClass>& rhs);
     Rational<TClass> & operator*=(const Rational<TClass>& rhs);
     Rational<TClass> & operator/=(const Rational<TClass>& rhs);
     Rational<TClass> & operator++();        //prefix ++
-    Rational<TClass> operator++(TClass); //postfix ++
+    Rational<TClass> operator++(int); //postfix ++
     Rational<TClass> & operator--();        //prefix --
-    Rational<TClass> operator--(TClass); //postfix --
+    Rational<TClass> operator--(int); //postfix --
 private:
     void reduce();
     TClass _numerator;
@@ -116,7 +117,7 @@ Rational<TClass> & Rational<TClass>::operator++() {//prefix ++
     return *this += 1;
 }
 template<typename TClass>
-Rational<TClass> Rational<TClass>::operator++(TClass) {//postfix ++
+Rational<TClass> Rational<TClass>::operator++(int) {//postfix ++
     auto copy{*this};
     ++(*this);
     return copy;
@@ -126,11 +127,29 @@ Rational<TClass> & Rational<TClass>::operator--() {//prefix --
     return *this -= 1;
 }
 template<typename TClass>
-Rational<TClass> Rational<TClass>::operator--(TClass) {//postfix --
+Rational<TClass> Rational<TClass>::operator--(int) {//postfix --
     auto copy{*this};
     --(*this);
     return copy;
 }
+
+template<typename TClass>
+void Rational<TClass>::reduce() {
+    auto gcd = std::gcd(_numerator,_denominator);
+    _numerator /= gcd;
+    _denominator /= gcd;
+    if (_denominator < 0) {
+        _numerator *= -1;
+        _denominator *= -1;
+    }
+}
+
+template<typename TClass>
+Rational<TClass>::Rational() {
+}
+
+
+
 //Global Operator Function
 template<typename TFunction>
 bool operator!=(const Rational<TFunction> &lhs, const Rational<TFunction> &rhs) {//canonical
